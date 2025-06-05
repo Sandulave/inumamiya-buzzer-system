@@ -6,20 +6,20 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-let buzzed = false;
-
 app.use(express.static('public'));
+
+let buzzedList = [];
 
 io.on('connection', (socket) => {
   socket.on('buzz', (name) => {
-    if (!buzzed) {
-      buzzed = true;
-      io.emit('buzzed', name);
+    if (!buzzedList.includes(name)) {
+      buzzedList.push(name);
+      io.emit('buzzedList', buzzedList);
     }
   });
 
   socket.on('reset', () => {
-    buzzed = false;
+    buzzedList = [];
     io.emit('reset');
   });
 });

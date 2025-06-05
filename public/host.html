@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html>
-<head><title>出題者用画面</title></head>
+
+<head>
+  <title>出題者用画面</title>
+</head>
+
 <body>
   <h1>出題者画面</h1>
   <p id="winner">まだ押されていません</p>
@@ -10,8 +14,9 @@
   <script>
     const socket = io();
 
-    socket.on('buzzed', name => {
-      document.getElementById('winner').textContent = `${name} さんが一番！`;
+    socket.on('buzzedList', list => {
+      const text = list.map((name, i) => `${i + 1}位：${name} さん`).join('<br>');
+      document.getElementById('winner').innerHTML = text;
     });
 
     document.getElementById('reset').addEventListener('click', () => {
@@ -20,4 +25,5 @@
     });
   </script>
 </body>
+
 </html>
