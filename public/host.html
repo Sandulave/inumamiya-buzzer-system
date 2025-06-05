@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head><title>出題者用画面</title></head>
+<body>
+  <h1>出題者画面</h1>
+  <p id="winner">まだ押されていません</p>
+  <button id="reset">リセット</button>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    socket.on('buzzed', name => {
+      document.getElementById('winner').textContent = `${name} さんが一番！`;
+    });
+
+    document.getElementById('reset').addEventListener('click', () => {
+      socket.emit('reset');
+      document.getElementById('winner').textContent = 'まだ押されていません';
+    });
+  </script>
+</body>
+</html>

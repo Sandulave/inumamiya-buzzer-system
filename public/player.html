@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head><title>参加者用画面</title></head>
+<body>
+  <h1>早押しボタン</h1>
+  <input id="name" placeholder="あなたの名前" />
+  <button id="buzzer">押す！</button>
+  <p id="result"></p>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    let locked = false;
+
+    document.getElementById('buzzer').addEventListener('click', () => {
+      if (locked) return;
+      const name = document.getElementById('name').value || '名無し';
+      socket.emit('buzz', name);
+      locked = true;
+    });
+
+    socket.on('reset', () => {
+      locked = false;
+      document.getElementById('result').textContent = '';
+    });
+
+    socket.on('buzzed', name => {
+      document.getElementById('result').textContent = `${name} さんが押しました！`;
+    });
+  </script>
+</body>
+</html>
