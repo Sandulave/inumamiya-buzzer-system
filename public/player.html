@@ -1,32 +1,47 @@
 <!DOCTYPE html>
 <html>
-<head><title>参加者用画面</title></head>
+<head>
+  <title>早押しボタン</title>
+</head>
 <body>
   <h1>早押しボタン</h1>
+
   <input id="name" placeholder="あなたの名前" />
   <button id="buzzer">押す！</button>
+
   <p id="result"></p>
+  <p id="rank"></p> <!-- 👈 追加：自分の順位を表示する欄 -->
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
     const socket = io();
     let locked = false;
+    let playerName = "";
 
-    document.getElementById('buzzer').addEventListener('click', () => {
+    // ボタンを押したとき
+    document.getElementById("buzzer").addEventListener("click", () => {
       if (locked) return;
-      const name = document.getElementById('name').value || '名無し';
-      socket.emit('buzz', name);
+      playerName = document.getElementById("name").value || "名無し";
+      socket.emit("buzz", playerName);
       locked = true;
     });
-    
 
-    socket.on('reset', () => {
+    // リセットされたとき
+    socket.on("reset", () => {
       locked = false;
-      document.getElementById('result').textContent = '';
+      document.getElementById("result").textContent = "";
+      document.getElementById("rank").textContent = "";
     });
 
-    socket.on('buzzed', name => {
-      document.getElementById('result').textContent = `${name} さんが押しました！`;
+    // 全員の押した順リストを受け取ったとき
+    socket.on("buzzedList", list => {
+      document.getElementById("result").textContent = `${list[0]} さんが押しました！`;
+
+      // 自分の順位を表示
+      const index = list.indexOf(playerName);
+      if (index !== -1) {
+        document.getElementById("rank").textContent = `あなたは ${index + 1} 位でした！`;
+      }
     });
   </script>
 </body>
