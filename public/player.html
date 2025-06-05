@@ -18,6 +18,7 @@
       socket.emit('buzz', name);
       locked = true;
     });
+    
 
     socket.on('reset', () => {
       locked = false;
